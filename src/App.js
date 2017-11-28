@@ -2,11 +2,8 @@ import React, { Component } from "react";
 import Header from "./header";
 import Article from "./article";
 import Loader from "./loader";
-// import logo from "./logo.svg";
 import "./css/html5bp.css";
 import "./css/normalize.css";
-// import placeholder1 from "./images/article_placeholder_1.jpg";
-// import placeholder2 from "./images/article_placeholder_2.jpg";
 
 class App extends Component {
   //same as below - use constructor if you want to bind other functions
@@ -19,16 +16,15 @@ class App extends Component {
       popUpArticleTitle: "",
       popUpArticleDescription: "",
       popUpArticleLink: "",
-      //feedsPopulated: false
-      selectedSource: "Mashable"
+      selectedSource: "Mashable",
+      searchText: ""
     };
 
     this.handleArticleClick = this.handleArticleClick.bind(this);
     this.handleCloseArticle = this.handleCloseArticle.bind(this);
     this.fetchSource = this.fetchSource.bind(this);
-
     this.handleSelectSource = this.handleSelectSource.bind(this);
-    //this.handleSearch = this.handleSearch.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   /*
@@ -39,7 +35,6 @@ class App extends Component {
   */
 
   handleArticleClick(id) {
-    //console.log("in handle click id");
     //console.log(story_id);
     const article = this.state.articles.find(article => article.id === id);
     console.log(article);
@@ -47,7 +42,8 @@ class App extends Component {
       showArticle: "",
       popUpArticleTitle: article.title,
       popUpArticleDescription: article.description,
-      popUpArticleLink: article.url
+      popUpArticleLink: article.url,
+      searchText: ""
     });
   }
 
@@ -72,49 +68,20 @@ class App extends Component {
     const diggPromise = this.fetchSource(
       "https://accesscontrolalloworiginall.herokuapp.com/http://digg.com/api/news/popular.json"
     );
-    console.log("diggPromise", diggPromise);
+    //console.log("diggPromise", diggPromise);
 
     const redditPromise = this.fetchSource(
       "https://accesscontrolalloworiginall.herokuapp.com/https://www.reddit.com/r/all.json"
     );
-    console.log("redditPromise", redditPromise);
+    //console.log("redditPromise", redditPromise);
 
     const mashablePromise = this.fetchSource(
       "https://accesscontrolalloworiginall.herokuapp.com/http://mashable.com/api/v1/posts"
     );
-    console.log("mashablePromise", mashablePromise);
+    //console.log("mashablePromise", mashablePromise);
 
-    /*
-    const diggPromise = fetch(
-      "https://accesscontrolalloworiginall.herokuapp.com/http://digg.com/api/news/popular.json"
-    )
-      .then(diggResults => diggResults.json())
-      .catch(err => {
-        console.log(err);
-      });
-    console.log("diggPromise", diggPromise);
-
-    const redditPromise = fetch(
-      "https://accesscontrolalloworiginall.herokuapp.com/https://www.reddit.com/r/all.json"
-    )
-      .then(redditResults => redditResults.json())
-      .catch(err => {
-        console.log(err);
-      });
-    console.log("redditPromise", redditPromise);
-
-    const mashablePromise = fetch(
-      "https://accesscontrolalloworiginall.herokuapp.com/http://mashable.com/api/v1/posts"
-    )
-      .then(mashableResults => mashableResults.json())
-      .catch(err => {
-        console.log(err);
-      });
-    console.log("mashablePromise", redditPromise);
-    */
-
-    Promise.all([redditPromise, diggPromise, mashablePromise]).then(
-      ([redditResults, diggResults, mashableResults]) => {
+    Promise.all([redditPromise, diggPromise, mashablePromise])
+      .then(([redditResults, diggResults, mashableResults]) => {
         console.log("digg: ", diggResults.data.feed);
         let diggRename = diggResults.data.feed.map(results => {
           return {
@@ -166,43 +133,34 @@ class App extends Component {
         //console.log("renameR: ", redditRename);
         //console.log("renameM: ", mashableRename);
 
-        //let joinedFeeds = diggRename.concat(redditRename);
+        //let joinedFeeds = diggRename.concat(redditRename).concat(mashableRename);
         //console.log(joinedFeeds);
-        //console.log(redditResults.concat(diggResults));
+
         this.setState({
           articles: diggRename.concat(redditRename).concat(mashableRename),
           showLoader: false
         });
-      }
-    );
-
-    // fetch(
-    //   "https://accesscontrolalloworiginall.herokuapp.com/http://digg.com/api/news/popular.json"
-    // )
-    //   .then(results => results.json())
-    //   .then(results => {
-    //     console.log("results: ", results);
-    //     this.setState({
-    //       articles: results.data.feed,
-    //       showLoader: false
-    //     });
-    //     //console.log(this.state.articles);
-    //     //console.log(this.state.articles[0].content.title_alt);
-    //   });
+      })
+      .catch(err => console.log(err));
   }
 
   handleSelectSource(source) {
     console.log(source);
-
     this.setState({
       selectedSource: source,
       showLoader: false
     });
   }
 
+  handleSearch(searchString) {
+    console.log(searchString);
+    this.setState({
+      searchText: searchString
+    });
+  }
+
   render() {
     //console.log(this.state.articles);
-    //console.log(this.state.articles[0] && this.state.articles[0].content);
     //console.log(this.state.articles[0] && this.state.articles[0].diggs.count);
 
     //if this.state.articles[0] exists && true ->
@@ -213,8 +171,8 @@ class App extends Component {
         <Header
           source={this.state.selectedSource}
           onSelect={this.handleSelectSource}
+          onSearch={this.handleSearch}
         />
-        {/* <div className="loader" style={{ display: "none" }} /> */}
         <Loader showLoader={this.state.showLoader} />
 
         <div className="popUp" style={{ display: this.state.showArticle }}>
@@ -233,33 +191,23 @@ class App extends Component {
             </a>
           </div>
         </div>
-
-        {/* <div>{this.state.feed}</div> */}
-
         <section id="main" className="container">
           {this.state.articles
             .filter(article => {
-              //return (
-              //article.source == "digg"
               if (this.state.selectedSource === "All") {
                 return article;
               } else if (article.source === this.state.selectedSource) {
                 return article;
               }
-              //article.source === this.state.selectedSource
-              //);
+              return null;
+            })
+            .filter(article => {
+              return article.title
+                .toLowerCase()
+                .includes(this.state.searchText);
             })
             .map(article => {
               return (
-                // <Article
-                //   title={article.content.title_alt}
-                //   category={article.content.domain_name}
-                //   score={article.diggs.count}
-                //   image={article.content.media.images[0].url}
-                //   id={article.story_id}
-                //   onClick={this.handleArticleClick}
-                // />
-
                 <Article
                   key={`${article.source}${article.id}`}
                   title={article.title}

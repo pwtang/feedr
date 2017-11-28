@@ -5,7 +5,8 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchActive: ""
+      searchActive: "",
+      searchText: ""
     };
 
     this.handleDiggClick = this.handleDiggClick.bind(this);
@@ -13,7 +14,7 @@ class Header extends Component {
     this.handleMashableClick = this.handleMashableClick.bind(this);
     this.handleFeedrClick = this.handleFeedrClick.bind(this);
     this.handleSearchClick = this.handleSearchClick.bind(this);
-    //this.toggleFlag = this.toggleFlag.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
   handleDiggClick() {
@@ -32,14 +33,13 @@ class Header extends Component {
     this.props.onSelect("All");
   }
 
-  // toggleFlag(flag) {
-  //   let toggle = flag ? "" : "active";
-  //   return toggle;
-  // }
-
   handleSearchClick() {
     this.setState({ searchActive: this.state.searchActive ? null : "active" });
-    //this.setState({ searchActive: this.toggleFlag(this.state.searchActive) });
+  }
+
+  handleSearchChange(event) {
+    this.setState({ searchText: event.target.value });
+    this.props.onSearch(this.state.searchText);
   }
 
   render() {
@@ -84,8 +84,13 @@ class Header extends Component {
               </li>
             </ul>
             <section id="search" className={this.state.searchActive}>
-              {/* <section id="search" className="active"> */}
-              <input type="text" name="name" value="" />
+              <input
+                type="text"
+                name="name"
+                // value=""
+                value={this.state.searchText}
+                onChange={this.handleSearchChange}
+              />
               <a href="#" onClick={this.handleSearchClick}>
                 <img src={searchImg} alt="" />
               </a>
