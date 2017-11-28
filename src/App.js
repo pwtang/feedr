@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Header from "./header";
 import Article from "./article";
 import Loader from "./loader";
+import Popup from "./popup";
 import "./css/html5bp.css";
 import "./css/normalize.css";
 
@@ -174,23 +175,14 @@ class App extends Component {
           onSearch={this.handleSearch}
         />
         <Loader showLoader={this.state.showLoader} />
+        <Popup
+          showArticle={this.state.showArticle}
+          popUpArticleTitle={this.state.popUpArticleTitle}
+          popUpArticleDescription={this.state.popUpArticleDescription}
+          popUpArticleLink={this.state.popUpArticleLink}
+          onCloseArticle={this.handleCloseArticle}
+        />
 
-        <div className="popUp" style={{ display: this.state.showArticle }}>
-          <a href="#" className="closePopUp" onClick={this.handleCloseArticle}>
-            X
-          </a>
-          <div className="container">
-            <h1>{this.state.popUpArticleTitle}</h1>
-            <p>{this.state.popUpArticleDescription}</p>
-            <a
-              href={this.state.popUpArticleLink}
-              className="popUpAction"
-              target="_blank"
-            >
-              Read more from source
-            </a>
-          </div>
-        </div>
         <section id="main" className="container">
           {this.state.articles
             .filter(article => {
