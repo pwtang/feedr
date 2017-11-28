@@ -8,10 +8,6 @@ class Popup extends Component {
   }
 
   handleCloseArticle() {
-    this.setState({
-      showArticle: "none"
-    });
-
     this.props.onCloseArticle();
   }
 
