@@ -17,7 +17,7 @@ class App extends Component {
       popUpArticleTitle: "",
       popUpArticleDescription: "",
       popUpArticleLink: "",
-      selectedSource: "Mashable",
+      selectedSource: "All",
       searchText: ""
     };
 

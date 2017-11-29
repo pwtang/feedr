@@ -6,7 +6,7 @@ class Header extends Component {
     super(props);
     this.state = {
       searchActive: "",
-      searchText: ""
+      searchText: "",
     };
 
     this.handleDiggClick = this.handleDiggClick.bind(this);
@@ -15,6 +15,11 @@ class Header extends Component {
     this.handleFeedrClick = this.handleFeedrClick.bind(this);
     this.handleSearchClick = this.handleSearchClick.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
+  }
+
+  handleSelectSource() {
+    this.setState({ selectSource:  "active" });
+
   }
 
   handleDiggClick() {
@@ -53,7 +58,7 @@ class Header extends Component {
             <ul>
               <li key="news-source">
                 <a href="#">
-                  News Source: <span>Source Name</span>
+                  News Source: <span>{this.props.source}</span>
                 </a>
                 {/* <ul>{listItems}</ul> */}
                 <ul>
