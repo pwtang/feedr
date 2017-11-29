@@ -11,7 +11,7 @@ class Article extends Component {
   }
 
   handleArticleClick() {
-    console.log("story id: ", this.props.id);
+    //console.log("story id: ", this.props.id);
     this.props.onClick(this.props.id);
   }
 
@@ -26,6 +26,7 @@ class Article extends Component {
             <h3>{this.props.title}</h3>
           </a>
           <h6>{this.props.category}</h6>
+          {/* check date sorted desc <h6>{this.props.date}</h6> */}
         </section>
         <section className="impressions">{this.props.score}</section>
         <div className="clearfix" />

@@ -83,7 +83,7 @@ class App extends Component {
 
     Promise.all([redditPromise, diggPromise, mashablePromise])
       .then(([redditResults, diggResults, mashableResults]) => {
-        console.log("digg: ", diggResults.data.feed);
+        //console.log("digg: ", diggResults.data.feed);
         let diggRename = diggResults.data.feed.map(results => {
           return {
             source: "Digg",
@@ -94,11 +94,12 @@ class App extends Component {
             score: results.diggs.count,
             image: results.content.media.images[0].url,
             url: results.content.url,
-            id: results.story_id
+            id: results.story_id,
+            date: results.date_published //1511835214
           };
         });
 
-        console.log("reddit: ", redditResults.data.children);
+      //  console.log("reddit: ", redditResults.data.children);
         let redditRename = redditResults.data.children.map(results => {
           return {
             source: "Reddit",
@@ -107,14 +108,15 @@ class App extends Component {
             description: "",
             category: results.data.subreddit,
             score: results.data.score,
-            image: "",
+            image: results.data.thumbnail,
             //image: results.data.preview && results.data.preview.images[0].source.url,
             url: results.data.url,
-            id: results.data.id
+            id: results.data.id,
+            date: results.created_utc //1511924765
           };
         });
 
-        console.log("Mashable: ", mashableResults.posts);
+        //console.log("Mashable: ", mashableResults.posts);
         let mashableRename = mashableResults.posts.map(results => {
           return {
             source: "Mashable",
@@ -126,7 +128,8 @@ class App extends Component {
             // image: results.images && results.images[0],
             image: results.images.i120x120,
             url: results.short_url,
-            id: results.id
+            id: results.id,
+            date: new Date(results.post_date).getTime() / 1000 // 1511910766
           };
         });
 
@@ -134,8 +137,10 @@ class App extends Component {
         //console.log("renameR: ", redditRename);
         //console.log("renameM: ", mashableRename);
 
-        //let joinedFeeds = diggRename.concat(redditRename).concat(mashableRename);
-        //console.log(joinedFeeds);
+        // let joinedFeeds = diggRename
+        //   .concat(redditRename)
+        //   .concat(mashableRename);
+        // console.log(joinedFeeds);
 
         this.setState({
           articles: diggRename.concat(redditRename).concat(mashableRename),
@@ -146,7 +151,7 @@ class App extends Component {
   }
 
   handleSelectSource(source) {
-    console.log(source);
+    //console.log(source);
     this.setState({
       selectedSource: source,
       showLoader: false
@@ -154,7 +159,7 @@ class App extends Component {
   }
 
   handleSearch(searchString) {
-    console.log(searchString);
+    //console.log(searchString);
     this.setState({
       searchText: searchString
     });
@@ -198,6 +203,9 @@ class App extends Component {
                 .toLowerCase()
                 .includes(this.state.searchText);
             })
+            .sort((a, b) => {
+              return b.date - a.date;
+            })
             .map(article => {
               return (
                 <Article
@@ -207,6 +215,7 @@ class App extends Component {
                   score={article.score}
                   image={article.image}
                   id={article.id}
+                  date={article.date}
                   onClick={this.handleArticleClick}
                 />
               );

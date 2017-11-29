@@ -12,9 +12,6 @@ class Popup extends Component {
   }
 
   render() {
-    console.log(this.props.showArticle);
-    console.log(this.props.selectedSource);
-
     return (
       <div className="popUp" style={{ display: this.props.showArticle }}>
         <a href="#" className="closePopUp" onClick={this.handleCloseArticle}>

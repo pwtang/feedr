@@ -43,14 +43,6 @@ class Header extends Component {
   }
 
   render() {
-    // const sourceList = ["Digg", "Reddit", "Mashable"];
-    // const listItems = sourceList.map(source => (
-    //   <li key={source}>
-    //     <a href="" onClick={this.handleSelect}>
-    //       {source}
-    //     </a>
-    //   </li>
-    // ));
     return (
       <header>
         <section className="container">
