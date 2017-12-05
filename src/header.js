@@ -5,53 +5,35 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchActive: "",
+      searchActive: false,
       searchText: "",
     };
 
-    this.handleDiggClick = this.handleDiggClick.bind(this);
-    this.handleRedditClick = this.handleRedditClick.bind(this);
-    this.handleMashableClick = this.handleMashableClick.bind(this);
-    this.handleFeedrClick = this.handleFeedrClick.bind(this);
+    this.selectFeed = this.selectFeed.bind(this);
     this.handleSearchClick = this.handleSearchClick.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
-  handleSelectSource() {
-    this.setState({ selectSource:  "active" });
-
-  }
-
-  handleDiggClick() {
-    this.props.onSelect("Digg");
-  }
-
-  handleRedditClick() {
-    this.props.onSelect("Reddit");
-  }
-
-  handleMashableClick() {
-    this.props.onSelect("Mashable");
-  }
-
-  handleFeedrClick() {
-    this.props.onSelect("All");
+  selectFeed(feed) {
+    return () => {
+      this.props.onSelect(feed);
+    }
   }
 
   handleSearchClick() {
-    this.setState({ searchActive: this.state.searchActive ? null : "active" });
+    this.setState({ searchActive: !this.state.searchActive });
   }
 
   handleSearchChange(event) {
     this.setState({ searchText: event.target.value });
-    this.props.onSearch(this.state.searchText);
+    this.props.onSearch(event.target.value);
   }
 
   render() {
     return (
       <header>
         <section className="container">
-          <a href="#" onClick={this.handleFeedrClick}>
+          <a href="#" onClick={this.selectFeed('All')}>
             <h1>Feedr</h1>
           </a>
           <nav>
@@ -63,28 +45,27 @@ class Header extends Component {
                 {/* <ul>{listItems}</ul> */}
                 <ul>
                   <li>
-                    <a href="#" onClick={this.handleDiggClick}>
+                    <a href="#" onClick={this.selectFeed('Digg')}>
                       Digg
                     </a>
                   </li>
                   <li>
-                    <a href="#" onClick={this.handleRedditClick}>
+                    <a href="#" onClick={this.selectFeed('Reddit')}>
                       Reddit
                     </a>
                   </li>
                   <li>
-                    <a href="#" onClick={this.handleMashableClick}>
+                    <a href="#" onClick={this.selectFeed('Mashable')}>
                       Mashable
                     </a>
                   </li>
                 </ul>
               </li>
             </ul>
-            <section id="search" className={this.state.searchActive}>
+            <section id="search" className={this.state.searchActive ? 'active' : ''}>
               <input
                 type="text"
                 name="name"
-                // value=""
                 value={this.state.searchText}
                 onChange={this.handleSearchChange}
               />

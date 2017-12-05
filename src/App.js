@@ -5,13 +5,14 @@ import Loader from "./loader";
 import Popup from "./popup";
 import "./css/html5bp.css";
 import "./css/normalize.css";
+import "./css/App.css";
 
 class App extends Component {
   //same as below - use constructor if you want to bind other functions
   constructor(props) {
     super(props);
     this.state = {
-      showLoader: false,
+      showLoader: true,
       articles: [],
       showArticle: "none",
       popUpArticleTitle: "",
@@ -38,13 +39,13 @@ class App extends Component {
   handleArticleClick(id) {
     //console.log(story_id);
     const article = this.state.articles.find(article => article.id === id);
+    // ✓✓✓
     console.log(article);
     this.setState({
       showArticle: "",
       popUpArticleTitle: article.title,
       popUpArticleDescription: article.description,
       popUpArticleLink: article.url,
-      searchText: ""
     });
   }
 
@@ -53,6 +54,7 @@ class App extends Component {
       showArticle: "none"
     });
   }
+  // Great consistent function naming!
 
   fetchSource(link) {
     return fetch(link)
@@ -60,12 +62,10 @@ class App extends Component {
       .catch(err => {
         console.log(err);
       });
+    // Nice abstraction!
   }
 
   componentDidMount() {
-    this.setState({
-      showLoader: true
-    });
     const diggPromise = this.fetchSource(
       "https://accesscontrolalloworiginall.herokuapp.com/http://digg.com/api/news/popular.json"
     );
@@ -81,6 +81,7 @@ class App extends Component {
     );
     //console.log("mashablePromise", mashablePromise);
 
+    // Making promise.all look easy
     Promise.all([redditPromise, diggPromise, mashablePromise])
       .then(([redditResults, diggResults, mashableResults]) => {
         //console.log("digg: ", diggResults.data.feed);
@@ -154,7 +155,6 @@ class App extends Component {
     //console.log(source);
     this.setState({
       selectedSource: source,
-      showLoader: false
     });
   }
 
@@ -191,25 +191,21 @@ class App extends Component {
         <section id="main" className="container">
           {this.state.articles
             .filter(article => {
-              if (this.state.selectedSource === "All") {
-                return article;
-              } else if (article.source === this.state.selectedSource) {
-                return article;
-              }
-              return null;
+              return this.state.selectedSource === "All"
+                || article.source === this.state.selectedSource
             })
             .filter(article => {
               return article.title
                 .toLowerCase()
-                .includes(this.state.searchText);
+                .includes(this.state.searchText.toLowerCase());
             })
             .sort((a, b) => {
               return b.date - a.date;
-            })
+            }) // Fantastic use of filtering, sorting + mapping!
             .map(article => {
               return (
                 <Article
-                  key={`${article.source}${article.id}`}
+                  key={`${article.source}${article.id}` /* Solid key creation - this should always be unique */}
                   title={article.title}
                   category={article.category}
                   score={article.score}

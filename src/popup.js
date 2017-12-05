@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 
 class Popup extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleCloseArticle = this.handleCloseArticle.bind(this);
-  }
-
-  handleCloseArticle() {
-    this.props.onCloseArticle();
-  }
-
   render() {
+    if (this.props.showArticle === 'none') {
+      return null;
+    }
+
     return (
-      <div className="popUp" style={{ display: this.props.showArticle }}>
-        <a href="#" className="closePopUp" onClick={this.handleCloseArticle}>
+      <div className="popUp">
+        <a href="#" className="closePopUp" onClick={this.props.onCloseArticle}>
           X
         </a>
         <div className="container">
